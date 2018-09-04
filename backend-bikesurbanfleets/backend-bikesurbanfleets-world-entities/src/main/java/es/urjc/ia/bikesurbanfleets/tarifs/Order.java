@@ -1,4 +1,6 @@
-package es.urjc.ia.bikesurbanfleets.infraestructure.entities;
+package es.urjc.ia.bikesurbanfleets.tarifs;
+
+import es.urjc.ia.bikesurbanfleets.infraestructure.entities.Station;
 
 public class Order {
 	private Station station;   // origin or destination station

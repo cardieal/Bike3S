@@ -7,6 +7,7 @@ import es.urjc.ia.bikesurbanfleets.common.graphs.GeoPoint;
 import es.urjc.ia.bikesurbanfleets.common.graphs.GeoRoute;
 import es.urjc.ia.bikesurbanfleets.common.interfaces.Entity;
 import es.urjc.ia.bikesurbanfleets.common.util.IdGenerator;
+import es.urjc.ia.bikesurbanfleets.tarifs.Order;
 
 /**
  * This class represents the system trucks which transport bikes from one station to other/others 

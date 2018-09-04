@@ -6,9 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.w3c.dom.events.Event;
-
 import es.urjc.ia.bikesurbanfleets.common.graphs.GeoPoint;
 import es.urjc.ia.bikesurbanfleets.infraestructure.InfraestructureManager;
 import es.urjc.ia.bikesurbanfleets.infraestructure.entities.Station;
@@ -16,18 +14,20 @@ import es.urjc.ia.bikesurbanfleets.infraestructure.entities.Truck;
 import es.urjc.ia.bikesurbanfleets.services.SimulationServices;
 
 public class SystemOperator {
-	private List<Station> stations;
-	private List<Truck> trucks;
-	private Map<Integer, Integer> availableTrucks;	
-	private Map<Integer, Integer> unavailableTrucks;
+	private InfraestructureManager infraestructure;
+	private Map<Integer, Station> stations;
+	private Map<Integer, Truck> trucks;
+	private Map<Integer, GeoPoint> availableTrucks;   // key = truck id, value = position	
+	private Map<Integer, List<Order>> unavailableTrucks;   // key = truck id, value = tasks that truck must carry out 
 	private SimulationServices services;
-	private int revenues;
+	private int revenues;   // in cents
 	private Map<Integer, Integer> pricesToRent;
 	private Map<Integer, Integer> pricesToReturn;
-
+	
 	public SystemOperator(InfraestructureManager infraestructure, SimulationServices services) {
-		this.stations = infraestructure.consultStations();
-		this.trucks = infraestructure.consultTrucks();
+		this.infraestructure = infraestructure;  
+		this.stations = new HashMap();
+		this.trucks = new HashMap();
 		this.availableTrucks = new HashMap<>();
 		this.unavailableTrucks = new HashMap<>();
 		this.services = services;
@@ -36,7 +36,7 @@ public class SystemOperator {
 	}
 	
 	public void init() {
-		for (Station station: stations) {
+		for (Station station: infraestructure.consultStations()) {
 			double bikesRatio = station.availableBikes()/station.getCapacity();
 			double slotsRatio = station.availableSlots() / station.getCapacity();
 			
@@ -71,6 +71,10 @@ public class SystemOperator {
 			else {
 				pricesToReturn.put(station.getId(), 40);
 			}
+		}
+		
+		for(Truck truck: infraestructure.consultTrucks()) {
+			trucks.put(truck.getId(), truck);
 		}
 	}
 	
@@ -131,7 +135,7 @@ public class SystemOperator {
 		if (bikesToBring > 0) {
 
 			Comparator<Station> byDistance = services.getStationComparator().byDistance(station.getPosition());
-			List<Station> orderedStations = stations.stream()
+			List<Station> orderedStations = infraestructure.consultStations().stream()
 				.sorted(byDistance).collect(Collectors.toList());
 			
 			while (i < orderedStations.size() && counter < bikesToBring) {
@@ -147,6 +151,7 @@ public class SystemOperator {
 				i++;
 			}
 		}
+		return events;
 	}
 	
 	public void charge(int money) {
