@@ -118,22 +118,21 @@ public class SystemOperator {
 		
 	}
 	
-	public List<Event> evaluateBringBikes(Station station) {
+	public List<Event> assessBringBikes(Station station) {
 		List<Event> events = new ArrayList();
 		double bikesRatio = station.availableBikes()/station.getCapacity();
 		double slotsRatio = station.availableSlots()/station.getCapacity();
-		double availableResourcesRatio = bikesRatio + slotsRatio;
-		int bikesToBring = 0;
-		int counter = 0;
+		double availableResourcesRatio = bikesRatio + slotsRatio;   // percentage of the station which is busy with available resoruces
+		int bikesToBring = 0;   // number of bikes that must be brought to the analyzed station
+		int counter = 0;   // number of bikes which have been selected to replenish the selected station
 		int i = 0;
 		
-		if (bikesRatio <= 0.25 && slotsRatio >= 0.5 && availableResourcesRatio >= 0.4) {
+		if (bikesRatio <= 0.25 && slotsRatio >= 0.5) {
 			int halfOfResources = (int) Math.round(availableResourcesRatio*station.getCapacity()/2);
 			bikesToBring = halfOfResources-station.availableBikes();
 	}
 
 		if (bikesToBring > 0) {
-
 			Comparator<Station> byDistance = services.getStationComparator().byDistance(station.getPosition());
 			List<Station> orderedStations = infraestructure.consultStations().stream()
 				.sorted(byDistance).collect(Collectors.toList());
