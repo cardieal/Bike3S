@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/stimonm/Bike3S.svg?branch=master)](https://travis-ci.org/stimonm/Bike3S)
 # Bike3S - A Bike Sharing System Simulator
 
+Test
+
 Bike3S is a simulator created for the purpose of testing different behaviors in real bike sharing systems. 
 Bike sharing systems allow citizens to move between different places in an simple and economical way. Bike3S offers us the possibility to
 execute situations using different infrastructure configurations, user models and balancing algorithms.
